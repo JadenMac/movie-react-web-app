@@ -97,9 +97,9 @@ function Profile() {
 
 
 
-  const fetchMoviesReviewed = async () => {
+  const fetchMoviesReviewed = async (userId) => {
     try {
-    const reviews = await reviewsClient.findMoviesUserReviewed(currentUser._id);
+    const reviews = await reviewsClient.findMoviesUserReviewed(userId);
     if (reviews) {
         // console.log(reviews);
         // console.log("adding user info and movie info to review objects");
@@ -137,7 +137,7 @@ catch(error) {
 
     if (account) {
       fetchTheater();
-      fetchMoviesReviewed();
+      fetchMoviesReviewed(account._id);
       
     }
   }, [account]);
