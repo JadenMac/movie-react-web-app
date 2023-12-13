@@ -55,6 +55,9 @@ function Details() {
       const saveReview = async () => {
         //if the user has not entered a rating, do nothing
         if (currentUserReview && currentUserReview.rating) {
+          if (!currentUserReview.description) {
+            setCurrentUserReview({...currentUserReview, description: ""})
+          }
           try {
             const userReview = await reviewsClient.findUserReviewOfMovie(currentUser._id, id, currentUserReview);
 

@@ -22,8 +22,10 @@ function MovieAppNav(){
 
       const fetchAccount = async () => {
         try {
+          console.log("nav fetching account");
         const account = await client.account();
         dispatch(setCurrentUser(account));
+        console.log(currentUser);
         }
         catch(error) {
     

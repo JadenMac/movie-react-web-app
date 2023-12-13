@@ -56,7 +56,7 @@ function Home() {
                 <>
                 <h5 className='mb-4'>Welcome back {currentUser.username}!</h5>
             
-            <div className='mb-4'>
+                <div className="row d-flex flex-wrap mb-4">
             <h4>Movies You Reviewed Recently</h4>
             {moviesReviewed && (
                 moviesReviewed.map((movie) => (

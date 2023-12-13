@@ -3,9 +3,12 @@ import {Link} from "react-router-dom"
 import * as client from "./client";
 import { BsFillCheckCircleFill, BsTrash3Fill, BsPencil, BsPlusCircleFill }
   from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
+
 function UserTable() {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({ username: "", password: "", role: "USER" });
+  const { currentUser } = useSelector((state) => state.usersReducer);
   const createUser = async () => {
     try {
       const newUser = await client.createUser(user);
@@ -49,8 +52,20 @@ function UserTable() {
 
   useEffect(() => { fetchUsers(); }, []);
   return (
+
     <div>
       <h1>User List</h1>
+      {(!currentUser || currentUser?.role !== "ADMIN") && (
+        <>
+        <div className="">
+        <h5 className="">Cannot Access</h5>
+      </div>
+      <div className="">
+        <p>Please sign in as an ADMIN user in order to access this content.</p>
+      </div>
+      </>
+      )}
+      {currentUser?.role === "ADMIN" && (
       <div className="table-responsive">
       <table className="table">
         <thead>
@@ -61,12 +76,13 @@ function UserTable() {
             <th>Last Name</th>
           </tr>
           <tr>
-            <td>
-              <input value={user.password} onChange={(e) => setUser({ ...user, password: e.target.value })}/>
-              </td>
+            
               <td>
               <input value={user.username} onChange={(e) => setUser({ ...user, username: e.target.value })}/>
             </td>
+            <td>
+              <input value={user.password} onChange={(e) => setUser({ ...user, password: e.target.value })}/>
+              </td>
             <td>
               <input value={user.firstName} onChange={(e) => setUser({ ...user, firstName: e.target.value })}/>
             </td>
@@ -113,6 +129,8 @@ function UserTable() {
         </tbody>
       </table>
       </div>
+      )}
+
     </div>
   );
 }

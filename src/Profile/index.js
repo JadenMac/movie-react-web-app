@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as followsClient from "../follows/client";
 import * as theaterClient from "../theaters/client";
 import * as reviewsClient from "../reviews/client";
+import * as tmdbClient from "../tmdbService";
 
 function Profile() {
   const { id } = useParams();
@@ -13,10 +14,10 @@ function Profile() {
   const [following, setFollowing] = useState([]);
   const [followingUser, setFollowingUser] = useState(false);
   const [theater, setTheater] = useState(null);
-  const [reviews, setReviews] = useState([]);
+  const [moviesReviewed, setMoviesReviewed] = useState([]);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.usersReducer);
-  console.log(currentUser)
+  // console.log(currentUser);
 
   const findUserById = async (id) => {
     const user = await client.findUserById(id);
@@ -27,12 +28,12 @@ function Profile() {
   const userFollows = async (followed_id ) => {
     const userFollowing = await followsClient.findUsersFollowedByUser(currentUser._id);
     if (userFollowing) {
-      userFollowing.forEach((followed) => {if (followed._id === followed_id) {
-        console.log(followed);
-        return true;
-      }})
+      userFollowing.forEach((follow) => {if (follow.followed._id === account._id) {
+        // console.log("current user follows this account");
+        setFollowingUser(true);
+      }}
+      )
     }
-    return false;
   }
 
   const signout = async () => {
@@ -96,12 +97,23 @@ function Profile() {
 
 
 
-  const fetchAccountReviews = async () => {
-    if (account) {
-      const reviews = reviewsClient.findMoviesUserReviewed(account._id);
-      setReviews(reviews);
-    }
+  const fetchMoviesReviewed = async () => {
+    try {
+    const reviews = await reviewsClient.findMoviesUserReviewed(currentUser._id);
+    if (reviews) {
+        // console.log(reviews);
+        // console.log("adding user info and movie info to review objects");
+        for (let i=0; i<reviews.length; i++) {
+          const movie = await tmdbClient.fetchMovieById(reviews[i].tmdb_id);
+          reviews[i] = movie;
+        }
+    setMoviesReviewed(reviews);
   }
+}
+catch(error) {
+    console.log(error);
+}
+}
 
   useEffect(() => {
     if (id) {
@@ -119,22 +131,21 @@ function Profile() {
       console.log("fetching user following")
       console.log(account)
       fetchFollowing(account._id);
-      if (currentUser && userFollows(account._id)) {
-        setFollowingUser(true);
-      }
+      userFollows(account._id);
+      console.log(followingUser);
     }
 
     if (account) {
-      console.log("fetching user theater")
       fetchTheater();
+      fetchMoviesReviewed();
       
     }
   }, [account]);
 
-  console.log(account);
+
 
   return (
-    <div className=" container">
+    <div className=" container profile-section">
       
       <h1 className=" ">Account</h1>
 
@@ -208,10 +219,23 @@ function Profile() {
           className="form-select mb-4"
           id="editUserTypeInput"
           disabled
-          onChange={(e) => setAccount({ ...account,
-              role: e.target.value })}>
-            <option value={`${account.role}`}>{account.role}</option>
+          >
+            <option value={`${currentUser.role}`}>{currentUser.role}</option>
           </select>
+
+          {account?.role === "ADMIN" && (
+            <>
+          <label for="editAdminPosInput">Admin Position</label>
+          <input value={account.position}
+          className="form-control mb-2"
+          id="editAdminPosInput"
+            onChange={(e) => setAccount({ ...account,
+              position: e.target.value })}/>
+          </>
+          )}
+
+
+          
 
           <button className="btn btn-md btn-primary w-25 m-1" onClick={save}>
      Save
@@ -222,6 +246,18 @@ function Profile() {
   </>
   )
           }
+          {id && account?.role === "ADMIN" && (
+            <>
+          <label for="editAdminPosInput">Admin Position</label>
+          <input value={account.position}
+          className="form-control mb-2"
+          id="editAdminPosInput"
+          disabled
+            onChange={(e) => setAccount({ ...account,
+              position: e.target.value })}/>
+          </>
+          )}
+
           {id && !currentUser && (<Link to="../register"> 
           <button className="btn btn-md btn-success w-25" >
      Follow
@@ -278,8 +314,21 @@ function Profile() {
 }
 
 <h2 className="mt-3">Movies Reviewed</h2>
+<div className="row d-flex flex-wrap">
+{moviesReviewed && (
+                moviesReviewed.map((movie) => (
 
-
+                    <div className="card w-50" >
+                      <Link to={`/details/${movie.id}`}>
+                        <img className="card-img-top" src={tmdbClient.movieImageUrl(movie)} />
+                        <div className="card-body">
+                        <h3 className="card-title">{movie.title}</h3>
+                        </div>
+                      </Link>
+                    </div>
+                  ))
+            )}
+            </div>
       
       </div>
       )}

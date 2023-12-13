@@ -43,6 +43,10 @@ code {
   width:300px;
 }
 
+.profile-section .card {
+  max-width: 300px;
+}
+
 .card a {
   color:black;
   text-decoration: none;
