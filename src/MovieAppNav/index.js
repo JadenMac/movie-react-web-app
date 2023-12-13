@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import * as client from "../users/client";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../users/reducer";
+import {useEffect} from "react";
 
 
 
@@ -17,6 +18,42 @@ function MovieAppNav(){
         dispatch(setCurrentUser(null));
         navigate("/login");
       };
+
+
+      const fetchAccount = async () => {
+        try {
+        const account = await client.account();
+        dispatch(setCurrentUser(account));
+        }
+        catch(error) {
+    
+        }
+      };
+
+
+    //   if (!currentUser ) {
+    //     try {
+    //         const account = fetchAccount();
+    //         if (account) {
+    //             dispatch(setCurrentUser(account));
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.log(error);
+    //     }
+    //   }
+    //   console.log(currentUser);
+
+    useEffect(() => {
+        if (!currentUser) {
+          fetchAccount();
+    
+        }
+    
+      }, [currentUser]);
+
+      
+
     return (
 
     <nav className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark justify-content-between">
@@ -42,6 +79,8 @@ function MovieAppNav(){
 <li className="nav-item">
 <Link className={`nav-link ${pathname.includes("profile") && "active"}`} to="../profile">Profile</Link>
 </li>
+
+
 
 {!currentUser &&
 (

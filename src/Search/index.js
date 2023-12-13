@@ -35,10 +35,10 @@ function Search() {
   }, []);
 
   return (
-    <div className="movie-search-section row justify-content-center">
+    <div className="movie-search-section container">
     
 
-      <h1 className="text-center">Search for Movies</h1>
+      <h1 className="">Search for Movies</h1>
 
       <div className="input-group w-75 ">
         

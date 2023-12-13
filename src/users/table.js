@@ -51,16 +51,20 @@ function UserTable() {
   return (
     <div>
       <h1>User List</h1>
+      <div className="table-responsive">
       <table className="table">
         <thead>
           <tr>
             <th>Username</th>
+            <th>Password</th>
             <th>First Name</th>
             <th>Last Name</th>
           </tr>
           <tr>
             <td>
               <input value={user.password} onChange={(e) => setUser({ ...user, password: e.target.value })}/>
+              </td>
+              <td>
               <input value={user.username} onChange={(e) => setUser({ ...user, username: e.target.value })}/>
             </td>
             <td>
@@ -73,15 +77,17 @@ function UserTable() {
               <select value={user.role} onChange={(e) => setUser({ ...user, role: e.target.value })}>
                 <option value="USER">User</option>
                 <option value="ADMIN">Admin</option>
-                <option value="FACULTY">Faculty</option>
-                <option value="STUDENT">Student</option>
               </select>
             </td>
             <td>
+              <button className="btn">
             <BsFillCheckCircleFill onClick={updateUser}
       className="me-2 text-success fs-1 text" />
+      </button>
+      <button className="btn">
     <BsPlusCircleFill onClick={createUser}
       className="text-success fs-1 text" />
+      </button>
             </td>
           </tr>
         </thead>
@@ -106,6 +112,7 @@ function UserTable() {
             </tr>))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

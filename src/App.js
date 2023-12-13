@@ -14,6 +14,7 @@ import MovieAppNav from "./MovieAppNav";
 import Signup from './users/signup';
 import UserTable from './users/table';
 import store from "./store";
+import TheaterTable from './theaters';
 import { Provider } from "react-redux";
 
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/admin/users" element={<UserTable />} />
+          <Route path="/theaters" element={<TheaterTable />} />
             </Routes>
       </div>
       </HashRouter>

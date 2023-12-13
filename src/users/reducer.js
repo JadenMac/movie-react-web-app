@@ -10,6 +10,8 @@ const slice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
+      console.log("currentUser set");
+      console.log(state.currentUser);
     },
   },
 });
